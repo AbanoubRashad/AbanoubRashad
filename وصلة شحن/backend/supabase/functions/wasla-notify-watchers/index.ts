@@ -31,13 +31,13 @@ Deno.serve(async (req) => {
   if (!secret || req.headers.get('x-webhook-secret') !== secret) return new Response('forbidden', { status: 403 });
 
   const payload = await req.json();
-  if (payload?.type !== 'INSERT' || payload?.table !== 'check_ins') return new Response('ignored');
+  if (payload?.type !== 'INSERT' || payload?.table !== 'wasla_check_ins') return new Response('ignored');
   const rec = payload.record as Row;
 
   const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
   const since = new Date(Date.parse(rec.at) - 24 * 3600_000).toISOString();
-  const { data: rows, error } = await sb.from('check_ins').select('*').eq('station_id', rec.station_id).gte('at', since);
+  const { data: rows, error } = await sb.from('wasla_check_ins').select('*').eq('station_id', rec.station_id).gte('at', since);
   if (error) return new Response(error.message, { status: 500 });
 
   const all = (rows as Row[]).map(toCheckIn);
@@ -46,12 +46,12 @@ Deno.serve(async (req) => {
   const after = computeStationState(all, now).status;
   if (before === after) return new Response('no change');
 
-  const { data: station } = await sb.from('stations').select('name').eq('id', rec.station_id).single();
-  const { data: watchers } = await sb.from('watches').select('user_id').eq('station_id', rec.station_id).neq('user_id', rec.user_id);
+  const { data: station } = await sb.from('wasla_stations').select('name').eq('id', rec.station_id).single();
+  const { data: watchers } = await sb.from('wasla_watches').select('user_id').eq('station_id', rec.station_id).neq('user_id', rec.user_id);
   const userIds = (watchers ?? []).map((w: { user_id: string }) => w.user_id);
   if (userIds.length === 0) return new Response('no watchers');
 
-  const { data: tokens } = await sb.from('push_tokens').select('token').in('user_id', userIds);
+  const { data: tokens } = await sb.from('wasla_push_tokens').select('token').in('user_id', userIds);
   const name = station?.name ?? 'المحطة';
   const body = after === 'working' ? `${name} رجعت تشتغل · سواق لسه مأكد` : `${name} بقت «${statusLabel(after)}»`;
 

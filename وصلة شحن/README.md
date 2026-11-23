@@ -11,7 +11,7 @@
 │   ├── schema.sql             الجداول والصلاحيات وقواعد البلاغ وصور البلاغات
 │   ├── seed.sql               المحطات (بيتولّد من app/src/data/stations.ts)
 │   ├── webhook.sql            بيربط البلاغات بالإشعارات
-│   └── supabase/functions/    notify-watchers: إشعار للي بيراقبوا المحطة
+│   └── supabase/functions/    wasla-notify-watchers: إشعار للي بيراقبوا المحطة
 └── design/                    ملفات التصميم الأصلية
 ```
 
@@ -34,7 +34,7 @@ npm run typecheck
 2. في **Authentication ← Sign In / Providers ← Phone** فعّل التسجيل بالموبايل، واختار مزوّد SMS (Twilio أو MessageBird أو Vonage). وأنت بتجرّب، استخدم **Test phone numbers** من نفس الصفحة.
 3. الإشعارات:
    ```bash
-   npx supabase functions deploy notify-watchers --no-verify-jwt --workdir backend --project-ref <PROJECT_REF>
+   npx supabase functions deploy wasla-notify-watchers --no-verify-jwt --workdir backend --project-ref <PROJECT_REF>
    npx supabase secrets set WEBHOOK_SECRET=<سر طويل> --project-ref <PROJECT_REF>
    ```
    بعد كده عدّل `<PROJECT_REF>` و `<WEBHOOK_SECRET>` في `backend/webhook.sql`، وشغّله.

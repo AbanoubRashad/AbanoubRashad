@@ -53,7 +53,7 @@ interface StationRow {
 
 export async function fetchStations(): Promise<Station[]> {
   if (!supabase) throw new Error('offline');
-  const { data, error } = await supabase.from('stations').select('*, plugs(id, connector, kw)').order('name');
+  const { data, error } = await supabase.from('wasla_stations').select('*, plugs:wasla_plugs(id, connector, kw)').order('name');
   if (error) throw error;
   return (data as StationRow[]).map((r) => ({
     id: r.id,
@@ -98,7 +98,7 @@ const rowToCheckIn = (r: CheckInRow): CheckIn => ({
 export async function fetchRecentCheckIns(sinceMs = 24 * 3600_000): Promise<CheckIn[]> {
   if (!supabase) throw new Error('offline');
   const since = new Date(Date.now() - sinceMs).toISOString();
-  const { data, error } = await supabase.from('check_ins').select('*').gte('at', since).order('at', { ascending: false }).limit(5000);
+  const { data, error } = await supabase.from('wasla_check_ins').select('*').gte('at', since).order('at', { ascending: false }).limit(5000);
   if (error) throw error;
   return (data as CheckInRow[]).map(rowToCheckIn);
 }
@@ -108,7 +108,7 @@ export function subscribeCheckIns(onInsert: (c: CheckIn) => void): () => void {
   if (!supabase) return () => {};
   const channel = supabase
     .channel('check_ins_live')
-    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'check_ins' }, (payload) => onInsert(rowToCheckIn(payload.new as CheckInRow)))
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'wasla_check_ins' }, (payload) => onInsert(rowToCheckIn(payload.new as CheckInRow)))
     .subscribe();
   return () => {
     supabase.removeChannel(channel);
@@ -122,7 +122,7 @@ export async function insertCheckIn(input: { stationId: string; plugId: string |
   let photo_path: string | null = null;
   if (input.photoUri) photo_path = await uploadPhoto(input.photoUri, input.stationId);
   const { data, error } = await supabase
-    .from('check_ins')
+    .from('wasla_check_ins')
     .insert({ station_id: input.stationId, plug_id: input.plugId, kind: input.kind, photo_path })
     .select()
     .single();
@@ -135,20 +135,20 @@ async function uploadPhoto(uri: string, stationId: string): Promise<string> {
   const { data: u } = await supabase.auth.getUser();
   const path = `${u.user?.id}/${stationId}-${Date.now()}.jpg`;
   const body = await (await fetch(uri)).arrayBuffer();
-  const { error } = await supabase.storage.from('checkin-photos').upload(path, body, { contentType: 'image/jpeg' });
+  const { error } = await supabase.storage.from('wasla-checkin-photos').upload(path, body, { contentType: 'image/jpeg' });
   if (error) throw error;
   return path;
 }
 
 export async function insertPendingStation(s: { name: string; operator: string; connector: Connector; kw: number | null; count: number; lat: number; lng: number }) {
   if (!supabase) throw new Error('offline');
-  const { error } = await supabase.from('pending_stations').insert(s);
+  const { error } = await supabase.from('wasla_pending_stations').insert(s);
   if (error) throw error;
 }
 
 export async function fetchWatches(): Promise<string[]> {
   if (!supabase) throw new Error('offline');
-  const { data, error } = await supabase.from('watches').select('station_id');
+  const { data, error } = await supabase.from('wasla_watches').select('station_id');
   if (error) throw error;
   return (data as { station_id: string }[]).map((w) => w.station_id);
 }
@@ -156,14 +156,14 @@ export async function fetchWatches(): Promise<string[]> {
 export async function setWatch(stationId: string, on: boolean) {
   if (!supabase) throw new Error('offline');
   const { error } = on
-    ? await supabase.from('watches').upsert({ station_id: stationId })
-    : await supabase.from('watches').delete().eq('station_id', stationId);
+    ? await supabase.from('wasla_watches').upsert({ station_id: stationId })
+    : await supabase.from('wasla_watches').delete().eq('station_id', stationId);
   if (error) throw error;
 }
 
 export async function savePushToken(token: string) {
   if (!supabase) return;
-  await supabase.from('push_tokens').upsert({ token, platform: Platform.OS });
+  await supabase.from('wasla_push_tokens').upsert({ token, platform: Platform.OS });
 }
 
 // ---------- الحساب ----------
