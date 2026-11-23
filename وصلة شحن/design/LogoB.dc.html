@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>لوجو B – وصلة سلسلة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700&amp;family=Space+Grotesk:wght@500;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div dir="rtl" style="width: 600px; height: 640px; box-sizing: border-box; background: #0B1220; color: #E8EEF8; font-family: 'IBM Plex Sans Arabic', sans-serif; padding: 40px; display: flex; flex-direction: column; gap: 28px">
+  <span style="font-size: 13px; color: #9AA8C0; letter-spacing: 0.5px">اقتراح B · نصّين بيتوصلوا بالبرق</span>
+
+  <div style="display: flex; align-items: center; gap: 20px">
+    <div style="width: 120px; height: 120px; border-radius: 30px; background: #121A2B; border: 2px solid #26324A; display: flex; align-items: center; justify-content: center">
+      <svg width="84" height="84" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="نصّين سلسلة بينهم برق">
+        <path d="M24 18h-6a14 14 0 0 0 0 28h6" stroke="#E8EEF8" stroke-width="5"></path>
+        <path d="M40 18h6a14 14 0 0 1 0 28h-6" stroke="#E8EEF8" stroke-width="5"></path>
+        <path d="M35 20L27 33h10l-8 12" stroke="{{accent}}" stroke-width="5"></path>
+      </svg>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <span style="font-size: 54px; font-weight: 700; line-height: 1.1">وَصلة <span style="color: {{accent}}">شحن</span></span>
+      <span style="font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 500; color: #9AA8C0; letter-spacing: 3px" dir="ltr">WASLA CHARGE</span>
+    </div>
+  </div>
+
+  <span style="font-size: 16px; color: #C3CEE0">نصّين منفصلين، والبرق في النص هو اللي بيوصلهم. والفكرة دي هي معنى «وَصلة» بالظبط: العربية والشاحن بيتوصلوا.</span>
+
+  <div style="display: flex; gap: 20px; align-items: flex-end">
+    <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+      <div style="width: 96px; height: 96px; border-radius: 22px; background: #121A2B; border: 2px solid #26324A; display: flex; align-items: center; justify-content: center">
+        <svg width="66" height="66" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 18h-6a14 14 0 0 0 0 28h6" stroke="#E8EEF8" stroke-width="5"></path><path d="M40 18h6a14 14 0 0 1 0 28h-6" stroke="#E8EEF8" stroke-width="5"></path><path d="M35 20L27 33h10l-8 12" stroke="{{accent}}" stroke-width="5"></path></svg>
+      </div>
+      <span style="font-size: 12px; color: #9AA8C0">أيقونة التطبيق</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 8px; align-items: center">
+      <div style="width: 48px; height: 48px; border-radius: 12px; background: #121A2B; border: 2px solid #26324A; display: flex; align-items: center; justify-content: center">
+        <svg width="34" height="34" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 18h-6a14 14 0 0 0 0 28h6" stroke="#E8EEF8" stroke-width="6"></path><path d="M40 18h6a14 14 0 0 1 0 28h-6" stroke="#E8EEF8" stroke-width="6"></path><path d="M35 20L27 33h10l-8 12" stroke="{{accent}}" stroke-width="6"></path></svg>
+      </div>
+      <span style="font-size: 12px; color: #9AA8C0">صغير</span>
+    </div>
+    <div style="flex: 1; height: 96px; border-radius: 20px; background: #F4F7FB; display: flex; align-items: center; justify-content: center; gap: 12px">
+      <svg width="48" height="48" viewBox="0 0 64 64" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M24 18h-6a14 14 0 0 0 0 28h6" stroke="#0B1220" stroke-width="5"></path><path d="M40 18h6a14 14 0 0 1 0 28h-6" stroke="#0B1220" stroke-width="5"></path><path d="M35 20L27 33h10l-8 12" stroke="#0891B2" stroke-width="5"></path></svg>
+      <span style="font-size: 32px; font-weight: 700; color: #0B1220">وَصلة</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#22D3EE","options":["#22D3EE","#38BDF8","#A3E635","#FACC15"]},"$preview":{"width":600,"height":640}}'>
+class Component extends DCLogic {
+  renderVals() { return { accent: this.props.accent ?? '#22D3EE' }; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>وصلة شحن – الفلاتر</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220}
+a{color:#22D3EE}a:hover{color:#67E8F9}
+button{font-family:inherit;cursor:pointer}
+@keyframes wup{0%{translate:0 100%}100%{translate:0 0}}
+.w-up{animation:wup .5s cubic-bezier(.2,.8,.2,1) both}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #05080F; color: #E8EEF8; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif">
+  <div class="w-up" style="position: absolute; bottom: 0; right: 0; left: 0; top: 70px; background: #0F1728; border-radius: 28px 28px 0 0; padding: 8px 20px 22px; display: flex; flex-direction: column; gap: 26px; box-sizing: border-box">
+    <div aria-hidden="true" style="width: 36px; height: 4px; border-radius: 2px; background: #2A3654; align-self: center"></div>
+    <div style="display: flex; justify-content: space-between; align-items: center">
+      <h1 style="margin: 0; font-size: 26px; font-weight: 700">الفلاتر</h1>
+      <button onClick="{{ clear }}" style="background: transparent; border: 0; color: #22D3EE; font-size: 14px; min-height: 44px">مسح الكل</button>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span dir="ltr" style="align-self: flex-end; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; color: #5B6884">CONNECTOR</span>
+      <div dir="ltr" style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px">
+        <sc-for list="{{ connectors }}" as="c" hint-placeholder-count="4">
+          <button onClick="{{ c.toggle }}" style="{{ c.style }}">
+            <span style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; font-weight: 700">{{ c.name }}</span>
+            <span style="font-size: 12px; opacity: .7">{{ c.sub }}</span>
+          </button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px">
+      <span dir="ltr" style="align-self: flex-end; font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 2px; color: #5B6884">MIN POWER · kW</span>
+      <div dir="ltr" style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #121A2B">
+        <sc-for list="{{ powers }}" as="pw" hint-placeholder-count="4">
+          <button onClick="{{ pw.pick }}" style="{{ pw.style }}">{{ pw.label }}</button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column">
+      <label style="display: flex; align-items: center; justify-content: space-between; min-height: 56px; border-top: 1px solid #18223A">
+        <span style="font-size: 15px">اللي اتأكد إنه شغّال بس</span>
+        <input type="checkbox" checked="" style="width: 24px; height: 24px; accent-color: #22D3EE">
+      </label>
+      <label style="display: flex; align-items: center; justify-content: space-between; min-height: 56px; border-top: 1px solid #18223A; border-bottom: 1px solid #18223A">
+        <span style="font-size: 15px">على طريقي بس</span>
+        <input type="checkbox" style="width: 24px; height: 24px; accent-color: #22D3EE">
+      </label>
+    </div>
+
+    <a href="Main.dc.html" style="margin-top: auto; height: 58px; border-radius: 18px; background: #22D3EE; color: #06202A; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 17px; font-weight: 700; text-decoration: none">اعرض <span dir="ltr" style="font-family: 'Space Grotesk', sans-serif">{{ count }}</span> محطات</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { on: { CCS2: true }, power: 50 }; }
+  renderVals() {
+    const s = this.state;
+    const defs = [['CCS2', 'DC سريع'], ['Type 2', 'AC'], ['GB/T', 'صيني'], ['CHAdeMO', 'DC']];
+    const connectors = defs.map(([n, sub]) => ({
+      name: n, sub,
+      style: 'height: 72px; border-radius: 18px; border: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; padding: 0 16px; transition: background 200ms, color 200ms, transform 150ms; ' + (s.on[n] ? 'background: #E8EEF8; color: #0A111F' : 'background: #121A2B; color: #E8EEF8'),
+      toggle: () => this.setState({ on: Object.assign({}, s.on, { [n]: !s.on[n] }) })
+    }));
+    const powers = [[0, 'Any'], [22, '22+'], [50, '50+'], [120, '120+']].map(([v, l]) => ({
+      label: l,
+      style: 'height: 44px; border-radius: 12px; border: 0; font-family: Space Grotesk, sans-serif; font-size: 15px; transition: background 200ms; ' + (s.power === v ? 'background: #22D3EE; color: #06202A; font-weight: 700' : 'background: transparent; color: #9AA8C0'),
+      pick: () => this.setState({ power: v })
+    }));
+    const n = Object.values(s.on).filter(Boolean).length;
+    const base = n === 0 ? 9 : 3 + n * 2;
+    const count = Math.max(1, base - (s.power >= 120 ? 4 : s.power >= 50 ? 2 : 0));
+    return { connectors, powers, count: String(count), clear: () => this.setState({ on: {}, power: 0 }) };
+  }
+}
+</script>
+</body>
+</html>

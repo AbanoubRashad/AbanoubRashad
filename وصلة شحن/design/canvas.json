@@ -1,0 +1,165 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "AddStation.dc.html": {
+      "h": 844,
+      "title": "7 · إضافة محطة",
+      "w": 390,
+      "x": 940,
+      "y": 3020
+    },
+    "Alerts.dc.html": {
+      "h": 844,
+      "title": "4 · التنبيهات",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "CheckIn.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "3 · Check-in",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Filters.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "6 · الفلاتر",
+      "w": 390,
+      "x": 470,
+      "y": 3020
+    },
+    "Login.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "5 · التسجيل",
+      "w": 390,
+      "x": 0,
+      "y": 3020
+    },
+    "LogoA.dc.html": {
+      "h": 640,
+      "title": "لوجو A · فيشة متوصلة",
+      "w": 600,
+      "x": 0,
+      "y": 1190
+    },
+    "LogoB.dc.html": {
+      "h": 640,
+      "title": "لوجو B · وصلة سلسلة",
+      "w": 600,
+      "x": 680,
+      "y": 1190
+    },
+    "LogoB2.dc.html": {
+      "h": 720,
+      "title": "الجولة التانية · B2 و D",
+      "w": 1280,
+      "x": 0,
+      "y": 1950
+    },
+    "LogoC.dc.html": {
+      "h": 640,
+      "title": "لوجو C · دبوس وبرق",
+      "w": 600,
+      "x": 1360,
+      "y": 1190
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "title": "1 · الخريطة",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "Navigate.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "title": "★ وديني · رحلة لايف",
+      "w": 390,
+      "x": 1880,
+      "y": 0
+    },
+    "Profile.dc.html": {
+      "h": 844,
+      "title": "8 · بروفايلي",
+      "w": 390,
+      "x": 1410,
+      "y": 3020
+    },
+    "Station.dc.html": {
+      "h": 844,
+      "title": "2 · صفحة المحطة",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-15T23:50:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "noteOrder": [
+    "t1",
+    "t2",
+    "t3",
+    "n1"
+  ],
+  "notes": {
+    "n1": {
+      "fill": "blue",
+      "text": "ألوان الحالة محجوزة: أخضر = شغال، أحمر = بايظ، أصفر = طابور/متضارب، رمادي = مفيش تأكيد. كل حالة ليها أيقونة. لون البراند Cyan بس.",
+      "w": 320,
+      "x": 2350,
+      "y": 0
+    },
+    "t1": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "وَصلة شحن — MVP · ستايل «ليل الطريق»",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 1960,
+      "text": "اللوجو — B هو المعتمد",
+      "w": 240,
+      "x": 0,
+      "y": 964
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "شاشات إضافية",
+      "w": 240,
+      "x": 0,
+      "y": 2790
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Station.dc.html",
+    "CheckIn.dc.html",
+    "Alerts.dc.html",
+    "Navigate.dc.html",
+    "LogoA.dc.html",
+    "LogoB.dc.html",
+    "LogoC.dc.html",
+    "LogoB2.dc.html",
+    "Login.dc.html",
+    "Filters.dc.html",
+    "AddStation.dc.html",
+    "Profile.dc.html"
+  ],
+  "pages": [],
+  "title": "وَصلة شحن – تصميم التطبيق"
+}

@@ -1,0 +1,5 @@
+html, body, #root { background: #0A111F; height: 100%; }
+body { margin: 0; overscroll-behavior: none; }
+.leaflet-container { background: #0A111F; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif; }
+.leaflet-control-attribution { background: rgba(10,17,31,.7) !important; color: #5B6884 !important; font-size: 9px; }
+.leaflet-control-attribution a { color: #7F8DA8 !important; }

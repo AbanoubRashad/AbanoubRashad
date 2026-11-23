@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>وصلة شحن – Check-in</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#0B1220}
+a{color:#22D3EE}a:hover{color:#67E8F9}
+button{font-family:inherit;cursor:pointer}
+@keyframes wpop{0%{scale:.5;opacity:0}70%{scale:1.1;opacity:1}100%{scale:1}}
+@keyframes wring{0%{scale:.6;opacity:.7}100%{scale:2.4;opacity:0}}
+@keyframes wrise{0%{translate:0 16px;opacity:0}100%{translate:0 0;opacity:1}}
+@keyframes wfloat{0%{translate:0 0;opacity:0}20%{opacity:1}100%{translate:0 -60px;opacity:0}}
+@keyframes wcheck{from{stroke-dashoffset:30}to{stroke-dashoffset:0}}
+.w-pop{animation:wpop .55s cubic-bezier(.2,.9,.3,1.25) both}
+.w-ring{animation:wring 1.2s ease-out .2s both}
+.w-ring2{animation:wring 1.2s ease-out .5s both}
+.w-rise{animation:wrise .5s ease-out both}
+.w-float{animation:wfloat 1.6s ease-out .5s both}
+.w-check{stroke-dasharray:30;animation:wcheck .45s ease-out .35s both}
+</style>
+</helmet>
+<div dir="rtl" style="width: 390px; height: 844px; position: relative; box-sizing: border-box; background: #0A111F; color: #E8EEF8; font-family: 'IBM Plex Sans Arabic', system-ui, sans-serif">
+
+<sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 0; padding: 16px 20px 22px; display: flex; flex-direction: column; gap: 22px">
+  <div style="display: flex; align-items: center; justify-content: space-between">
+    <a href="Station.dc.html" aria-label="إلغاء" style="width: 44px; height: 44px; border-radius: 22px; background: #121A2B; display: flex; align-items: center; justify-content: center">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E8EEF8" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+    <span style="display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border-radius: 16px; background: #0E2A33; font-size: 12px; color: #67E8F9">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="#67E8F9" aria-hidden="true"><circle cx="12" cy="12" r="6"></circle></svg>
+      إنت عند المحطة · 40 م</span>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 6px">
+    <span style="font-size: 13px; color: #7F8DA8">Infinity Hub – القرية الذكية</span>
+    <h1 style="margin: 0; font-size: 32px; font-weight: 700; line-height: 1.2">إيه الوضع<br>عندك دلوقتي؟</h1>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <button onClick="{{ pickOk }}" style="{{ okStyle }}">
+      <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 26px; background: #34D399; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#04261A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+      <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px"><span style="font-size: 19px; font-weight: 700">شحنت تمام</span><span style="font-size: 13px; color: #9AA8C0">الشاحن شغّال</span></span>
+    </button>
+    <button onClick="{{ pickBroken }}" style="{{ brokenStyle }}">
+      <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 26px; background: #F87171; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3A0B0B" stroke-width="3.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span>
+      <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px"><span style="font-size: 19px; font-weight: 700">بايظ</span><span style="font-size: 13px; color: #9AA8C0">مش بيشحن، أو الشاشة واقفة، أو الكابل مقطوع</span></span>
+    </button>
+    <button onClick="{{ pickQueue }}" style="{{ queueStyle }}">
+      <span aria-hidden="true" style="width: 52px; height: 52px; border-radius: 26px; background: #FBBF24; display: flex; align-items: center; justify-content: center; flex-shrink: 0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3A2A04" stroke-width="2.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg></span>
+      <span style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px"><span style="font-size: 19px; font-weight: 700">في طابور</span><span style="font-size: 13px; color: #9AA8C0">كل الشواحن مشغولة</span></span>
+    </button>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 10px">
+    <span style="font-size: 13px; color: #7F8DA8">على أنهي شاحن؟</span>
+    <div dir="ltr" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; padding: 4px; border-radius: 16px; background: #121A2B">
+      <button onClick="{{ plug1 }}" style="{{ p1 }}">01 CCS2</button>
+      <button onClick="{{ plug2 }}" style="{{ p2 }}">02 CCS2</button>
+      <button onClick="{{ plug3 }}" style="{{ p3 }}">03 TYPE 2</button>
+    </div>
+  </div>
+
+  <div style="margin-top: auto; display: grid; grid-template-columns: 56px 1fr; gap: 8px">
+    <button aria-label="ضيف صورة" style="height: 56px; border-radius: 18px; background: #121A2B; border: 0; display: flex; align-items: center; justify-content: center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8EEF8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"></path><circle cx="12" cy="13" r="3.5"></circle></svg></button>
+    <button onClick="{{ send }}" style="height: 56px; border-radius: 18px; background: #22D3EE; color: #06202A; border: 0; font-size: 17px; font-weight: 700">ابعت · بيوصل للكل فورًا</button>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center">
+  <div style="position: relative; width: 120px; height: 120px">
+    <div class="w-ring" style="{{ ringStyle }}"></div>
+    <div class="w-ring2" style="{{ ringStyle }}"></div>
+    <div class="w-pop" style="{{ badgeStyle }}">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#04261A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="w-check" d="{{ badgeIcon }}"></path></svg>
+    </div>
+    <span class="w-float" dir="ltr" style="position: absolute; top: -8px; left: -18px; font-family: 'Space Grotesk', sans-serif; font-size: 22px; font-weight: 700; color: #22D3EE">+10</span>
+  </div>
+  <span class="w-rise" style="font-size: 28px; font-weight: 700; animation-delay: .25s">شكرًا! بلاغك وصل</span>
+  <span class="w-rise" style="font-size: 15px; color: #9AA8C0; line-height: 1.7; animation-delay: .35s">{{ sentText }}</span>
+  <div class="w-rise" style="width: 100%; display: flex; flex-direction: column; gap: 8px; margin-top: 18px; animation-delay: .5s">
+    <a href="Main.dc.html" style="height: 56px; border-radius: 18px; background: #E8EEF8; color: #0A111F; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; text-decoration: none">رجوع للخريطة</a>
+    <button onClick="{{ again }}" style="height: 44px; border-radius: 14px; background: transparent; border: 0; color: #7F8DA8; font-size: 14px">بلّغ تاني</button>
+  </div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { pick: 'ok', plug: 1, sent: false }; }
+  renderVals() {
+    const base = 'min-height: 96px; padding: 16px; border-radius: 24px; display: flex; align-items: center; gap: 16px; color: #E8EEF8; text-align: right; transition: background 200ms, border-color 200ms, transform 200ms; border: 2px solid ';
+    const s = this.state, p = s.pick;
+    const on = { ok: base + '#34D399; background: #0F2A22; transform: scale(1.01)', broken: base + '#F87171; background: #2E1416; transform: scale(1.01)', queue: base + '#FBBF24; background: #2A2110; transform: scale(1.01)' };
+    const off = base + 'transparent; background: #121A2B';
+    const seg = (n) => 'height: 44px; border-radius: 12px; border: 0; font-family: Space Grotesk, sans-serif; font-size: 14px; transition: background 200ms; ' + (s.plug === n ? 'background: #E8EEF8; color: #0A111F; font-weight: 700' : 'background: transparent; color: #9AA8C0');
+    const col = { ok: '#34D399', broken: '#F87171', queue: '#FBBF24' }[p];
+    const icon = { ok: 'M5 12l5 5L20 7', broken: 'M6 6l12 12M18 6L6 18', queue: 'M12 7v5l3 2' }[p];
+    const plugName = ['01 CCS2', '02 CCS2', '03 Type 2'][s.plug - 1];
+    const txt = { ok: 'الشاحن ' + plugName + ' بقى متعلّم «شغّال» على الخريطة دلوقتي، وأي حد جاي في الطريق هيعرف.', broken: 'علّمنا ' + plugName + ' إنه ممكن يكون بايظ. لو سواق تاني أكد، هيتعلّم «بايظ» للكل، وهنبلّغ المشغل.', queue: 'الناس اللي جاية في الطريق هتعرف إن في طابور، وهتختار محطة تانية.' }[p];
+    return {
+      notSent: !s.sent, sent: s.sent,
+      okStyle: p === 'ok' ? on.ok : off, brokenStyle: p === 'broken' ? on.broken : off, queueStyle: p === 'queue' ? on.queue : off,
+      pickOk: () => this.setState({ pick: 'ok' }), pickBroken: () => this.setState({ pick: 'broken' }), pickQueue: () => this.setState({ pick: 'queue' }),
+      p1: seg(1), p2: seg(2), p3: seg(3),
+      plug1: () => this.setState({ plug: 1 }), plug2: () => this.setState({ plug: 2 }), plug3: () => this.setState({ plug: 3 }),
+      ringStyle: 'position: absolute; inset: 0; border-radius: 60px; background: ' + col,
+      badgeStyle: 'position: absolute; inset: 0; border-radius: 60px; display: flex; align-items: center; justify-content: center; background: ' + col,
+      badgeIcon: icon, sentText: txt,
+      send: () => this.setState({ sent: true }),
+      again: () => this.setState({ sent: false })
+    };
+  }
+}
+</script>
+</body>
+</html>
