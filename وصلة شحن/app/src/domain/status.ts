@@ -1,5 +1,4 @@
-import type { StationStatus } from '../theme';
-import type { CheckIn, Connector, Station } from './types';
+import type { CheckIn, Connector, Station, StationStatus } from './types';
 
 const MIN = 60_000;
 const HOUR = 60 * MIN;

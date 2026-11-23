@@ -1,3 +1,5 @@
+export type StationStatus = 'working' | 'broken' | 'queue' | 'conflict' | 'unknown';
+
 export type Connector = 'CCS2' | 'Type 2' | 'GB/T' | 'CHAdeMO';
 
 export type Area = 'أكتوبر' | 'زايد' | 'الصحراوي';
@@ -41,4 +43,6 @@ export interface CheckIn {
   /** وقت البلاغ بالميللي ثانية */
   at: number;
   userId: string;
+  /** صورة اختيارية مع البلاغ (مسار في Storage) */
+  photoPath?: string | null;
 }

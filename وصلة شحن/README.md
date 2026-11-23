@@ -6,31 +6,44 @@
 
 ```
 وصلة شحن/
-├── app/        التطبيق (Expo + React Native + TypeScript)، شغّال على أندرويد وآيفون والويب
-├── backend/    schema.sql: قاعدة البيانات على Supabase (المرحلة الجاية)
-└── design/     ملفات التصميم الأصلية (13 شاشة ولوجو)
+├── app/                       التطبيق (Expo + React Native + TypeScript)
+├── backend/
+│   ├── schema.sql             الجداول والصلاحيات وقواعد البلاغ وصور البلاغات
+│   ├── seed.sql               المحطات (بيتولّد من app/src/data/stations.ts)
+│   ├── webhook.sql            بيربط البلاغات بالإشعارات
+│   └── supabase/functions/    notify-watchers: إشعار للي بيراقبوا المحطة
+└── design/                    ملفات التصميم الأصلية
 ```
 
 ## التشغيل
 
-محتاج Node.js 20 أو أحدث.
-
 ```bash
 cd app
 npm install
-npx expo start
+npx expo start          # صوّر الـ QR بـ Expo Go، أو اضغط w للمتصفح
+npm test                # اختبارات قواعد الحالة ورقم الموبايل
+npm run typecheck
 ```
 
-- **على الموبايل:** نزّل **Expo Go** وصوّر الـ QR. خريطة جوجل الحقيقية بتشتغل على الموبايل بس.
-- **على الكمبيوتر:** اضغط `w` علشان يفتح في المتصفح، وده بيستخدم خريطة OpenStreetMap الداكنة.
-- **بيانات للعرض:** البروفايل ← «بيانات تجريبية». الزرار ده بيظهر في نسخة التطوير بس.
+- **من غير `.env`:** التطبيق بيشتغل محلي، والبلاغات بتتحفظ على الموبايل بس. أي كود من 6 أرقام بينفع في التسجيل.
+- **مع `.env`:** التطبيق بيتوصل بـ Supabase (انسخ `.env.example` لـ `.env`). البلاغات بتوصل للكل لحظيًا، والتسجيل بيبقى بكود SMS حقيقي.
 
-```bash
-npm test            # اختبارات قواعد حساب الحالة (14 اختبار)
-npm run typecheck   # فحص TypeScript
-```
+## تشغيل السيرفر (Supabase) — مرة واحدة
 
-## قواعد الحالة (`app/src/domain/status.ts`)
+1. اعمل مشروع على Supabase، وشغّل في SQL Editor بالترتيب: `backend/schema.sql`، وبعده `backend/seed.sql`.
+2. في **Authentication ← Sign In / Providers ← Phone** فعّل التسجيل بالموبايل، واختار مزوّد SMS (Twilio أو MessageBird أو Vonage). وأنت بتجرّب، استخدم **Test phone numbers** من نفس الصفحة.
+3. الإشعارات:
+   ```bash
+   npx supabase functions deploy notify-watchers --no-verify-jwt --workdir backend --project-ref <PROJECT_REF>
+   npx supabase secrets set WEBHOOK_SECRET=<سر طويل> --project-ref <PROJECT_REF>
+   ```
+   بعد كده عدّل `<PROJECT_REF>` و `<WEBHOOK_SECRET>` في `backend/webhook.sql`، وشغّله.
+4. حط `EXPO_PUBLIC_SUPABASE_URL` و `EXPO_PUBLIC_SUPABASE_KEY` في `app/.env`.
+
+> **مهم:** لو غيّرت قواعد الحالة في `app/src/domain/status.ts`، شغّل `npm run sync:functions` علشان السيرفر يحسب الحالة بنفس الطريقة.
+> ولو غيّرت المحطات في `stations.ts`، شغّل `npm run seed:sql`.
+
+## قواعد الحالة
 
 | الحالة | إمتى |
 | --- | --- |
@@ -40,15 +53,27 @@ npm run typecheck   # فحص TypeScript
 | بايظ | سواقين **مختلفين** قالوا «بايظ» في آخر 6 ساعات، ومحدش قال «شغّال» بعدهم |
 | مفيش تأكيد | مفيش بلاغات حديثة |
 
-## الشاشات
+**على السيرفر:**
+- وقت البلاغ بيتحدد على السيرفر، فمحدش يقدر يزوّره.
+- بلاغ واحد بس لكل مستخدم على نفس المحطة كل 10 دقايق.
+- محدش يقدر يبلّغ باسم حد تاني، ولا يشوف تنبيهات حد تاني.
+- اتجرّبت على Postgres 16.
 
-الخريطة · صفحة المحطة · التبليغ (Check-in) · «وديني» · التنبيهات · التسجيل · الفلاتر · إضافة محطة · بروفايلي
+## البناء للموبايل (EAS)
 
-## اللي فاضل قبل الإطلاق
+```bash
+npx eas-cli@latest login
+npx eas-cli@latest init                                    # بيدّيك EAS_PROJECT_ID
+npx eas-cli@latest build --profile preview --platform android   # APK للتجربة
+```
 
-1. **الإحداثيات:** الشيت مفيهوش لينكات Google Maps، فأماكن المحطات في `app/src/data/stations.ts` **تقريبية** ومتعلّمة `approximate: true`. لازم تتأكد واحدة واحدة.
-2. **الباك إند:** البلاغات دلوقتي بتتحفظ على الموبايل بس. نعمل مشروع Supabase، نشغّل `backend/schema.sql`، ونوصّل التطبيق بيه علشان البلاغات توصل للكل.
-3. **التسجيل:** شاشة الكود مش بتتحقق من حاجة لسه. هتتوصل بـ Supabase Auth (SMS OTP).
-4. **Google Maps API key للأندرويد:** محتاجينه قبل ما نعمل build للنشر (`eas build`).
-5. **إشعارات الموبايل:** التنبيهات دلوقتي جوه التطبيق بس. الـ push هتتعمل بـ expo-notifications مع الباك إند.
-6. **الصور في البلاغ:** الزرار موجود بس مقفول لحد ما الباك إند يجهز.
+- محتاج `GOOGLE_MAPS_API_KEY` (Maps SDK for Android) في متغيرات البيئة، علشان الخريطة تشتغل في نسخة الأندرويد.
+- الإشعارات من السيرفر بتشتغل في نسخة EAS بس، مش في Expo Go.
+
+## اللي فاضل
+
+- [ ] **إحداثيات المحطات تقريبية** (`approximate: true`)، ولازم تتأكد واحدة واحدة.
+- [ ] إنشاء مشروع Supabase وتشغيل الخطوات اللي فوق.
+- [ ] مزوّد SMS للتسجيل.
+- [ ] Google Maps API key، وأول build بـ EAS.
+- [ ] شاشة أدمن لمراجعة المحطات اللي المستخدمين ضافوها (`pending_stations`).

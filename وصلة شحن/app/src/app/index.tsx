@@ -101,6 +101,13 @@ export default function MapScreen() {
           <Chip label="شغّال بس" active={f.workingOnly} onPress={() => app.setFilters({ ...f, workingOnly: !f.workingOnly })} />
           <Chip label="على الطريق" active={f.onRouteOnly} onPress={() => app.setFilters({ ...f, onRouteOnly: !f.onRouteOnly })} />
         </View>
+        {app.remote && !app.online && (
+          <Pressable accessibilityRole="button" onPress={app.refresh} style={styles.offline}>
+            <T size={12} color={colors.textSoft}>
+              مفيش اتصال · بنعرض آخر بيانات عندك · اضغط تحدّث
+            </T>
+          </Pressable>
+        )}
       </View>
 
       <IconButton label="رجّعني لمكاني" size={48} bg={colors.surfaceGlass} onPress={() => setRecenter((n) => n + 1)} style={[styles.recenter]}>
@@ -263,6 +270,7 @@ const styles = StyleSheet.create({
   input: { flex: 1, minWidth: 0, color: colors.text, fontFamily: fonts.regular, fontSize: 16, textAlign: 'right', paddingVertical: 0 },
   avatar: { width: 52, height: 52, borderRadius: 26, backgroundColor: colors.surfaceGlass, alignItems: 'center', justifyContent: 'center' },
   filterChip: { height: 34, paddingHorizontal: 12, borderRadius: 17, backgroundColor: colors.text, flexDirection: 'row', alignItems: 'center', gap: 6 },
+  offline: { alignSelf: 'flex-start', height: 30, paddingHorizontal: 12, borderRadius: 15, backgroundColor: 'rgba(42,33,16,0.95)', justifyContent: 'center' },
   recenter: { position: 'absolute', bottom: 392, left: 14 },
   sheet: {
     position: 'absolute',

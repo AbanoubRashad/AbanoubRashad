@@ -18,13 +18,25 @@ export default function LoginScreen() {
   const [error, setError] = useState<string | null>(null);
   const phone = normalizeEgPhone(raw);
 
-  const finish = () => {
-    // TODO(backend): التحقق الحقيقي من الكود عن طريق Supabase Auth (SMS OTP)
-    if (!/^\d{6}$/.test(code)) {
-      setError('الكود 6 أرقام');
-      return;
-    }
-    app.signIn(phone!);
+  const [busy, setBusy] = useState(false);
+
+  const requestCode = async () => {
+    if (!phone) return setError('اكتب رقم موبايل مصري صح');
+    setBusy(true);
+    const r = await app.sendCode(phone);
+    setBusy(false);
+    if (!r.ok) return setError(r.error);
+    setError(null);
+    setCode('');
+    setStep('otp');
+  };
+
+  const finish = async () => {
+    if (!/^\d{6}$/.test(code)) return setError('الكود 6 أرقام');
+    setBusy(true);
+    const r = await app.confirmCode(phone!, code);
+    setBusy(false);
+    if (!r.ok) return setError(r.error);
     if (next) router.replace(next as Href);
     else router.dismissTo('/');
   };
@@ -76,13 +88,7 @@ export default function LoginScreen() {
               {error}
             </T>
           )}
-          <Button
-            label="ابعتلي الكود"
-            onPress={() => {
-              if (!phone) setError('اكتب رقم موبايل مصري صح');
-              else setStep('otp');
-            }}
-          />
+          <Button label={busy ? 'بنبعت...' : 'ابعتلي الكود'} disabled={busy} onPress={requestCode} />
         </View>
       ) : (
         <View style={{ gap: 10 }}>
@@ -114,7 +120,12 @@ export default function LoginScreen() {
               غيّر الرقم
             </T>
           </Pressable>
-          <Button label="تأكيد" onPress={finish} />
+          <Button label={busy ? 'بنتأكد...' : 'تأكيد'} disabled={busy} onPress={finish} />
+          {!app.remote && (
+            <T size={11} color={colors.textFaint} style={{ textAlign: 'center' }}>
+              نسخة تجريبية من غير سيرفر: أي 6 أرقام بتنفع
+            </T>
+          )}
         </View>
       )}
 

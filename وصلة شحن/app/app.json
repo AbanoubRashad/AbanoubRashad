@@ -43,6 +43,19 @@
         {
           "locationWhenInUsePermission": "وصلة شحن محتاجة موقعك علشان توريك أقرب شاحن شغّال."
         }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#22D3EE"
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "وصلة شحن محتاجة الكاميرا علشان تصوّر الشاحن مع البلاغ.",
+          "photosPermission": "وصلة شحن محتاجة الصور علشان تضيف صورة الشاحن للبلاغ."
+        }
       ]
     ],
     "experiments": {

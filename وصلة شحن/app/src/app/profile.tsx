@@ -11,15 +11,14 @@ const LEVEL_STEP = 100;
 
 export default function ProfileScreen() {
   const app = useApp();
-  const userId = app.user?.phone || app.deviceId;
-  const mine = app.checkIns.filter((c) => c.userId === userId).sort((a, b) => b.at - a.at);
+  const mine = app.myReports;
   const level = Math.floor(app.points / LEVEL_STEP) + 1;
   const toNext = LEVEL_STEP - (app.points % LEVEL_STEP);
   const progress = (app.points % LEVEL_STEP) / LEVEL_STEP;
 
   // «دقة البلاغات» = نسبة بلاغاتك اللي سواق تاني قال نفس الحاجة بعدها في خلال 3 ساعات
   const confirmed = mine.filter((m) =>
-    app.checkIns.some((o) => o.stationId === m.stationId && o.userId !== m.userId && o.kind === m.kind && o.at > m.at && o.at - m.at < 3 * 3600_000),
+    app.checkIns.some((o) => o.stationId === m.stationId && o.userId !== app.myUserId && o.kind === m.kind && o.at > m.at && o.at - m.at < 3 * 3600_000),
   ).length;
   const accuracy = mine.length ? Math.round((confirmed / mine.length) * 100) : 0;
 
@@ -70,7 +69,7 @@ export default function ProfileScreen() {
         )}
         {mine.slice(0, 5).map((r) => {
           const s = app.stations.find((x) => x.id === r.stationId);
-          const isConfirmed = app.checkIns.some((o) => o.stationId === r.stationId && o.userId !== r.userId && o.kind === r.kind && o.at > r.at);
+          const isConfirmed = app.checkIns.some((o) => o.stationId === r.stationId && o.userId !== app.myUserId && o.kind === r.kind && o.at > r.at);
           return (
             <View key={r.id} style={styles.reportRow}>
               <T size={14} style={{ flex: 1, textAlign: 'right' }} numberOfLines={1}>

@@ -1,12 +1,13 @@
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Animated, Easing, Platform, Pressable, StyleSheet, View } from 'react-native';
+import { Animated, Easing, Image, Platform, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Camera } from '../../components/icons';
 import { BackButton } from '../../components/screen';
-import { IconButton, StatusGlyph, T } from '../../components/ui';
+import { StatusGlyph, T } from '../../components/ui';
 import { distanceKm } from '../../domain/status';
 import type { ReportKind } from '../../domain/types';
 import { useMyLocation } from '../../lib/use-location';
@@ -27,6 +28,9 @@ export default function CheckInScreen() {
   const [pick, setPick] = useState<ReportKind>('ok');
   const [plug, setPlug] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [photo, setPhoto] = useState<string | null>(null);
 
   if (!s) return null;
 
@@ -35,10 +39,22 @@ export default function CheckInScreen() {
   const meters = Math.round(distanceKm(pos, s) * 1000);
   const near = granted && meters <= 300;
 
-  const send = () => {
-    app.report(s.id, pick, pick === 'queue' ? null : chosenPlug);
+  const send = async () => {
+    setBusy(true);
+    setError(null);
+    const r = await app.report(s.id, pick, pick === 'queue' ? null : chosenPlug, photo);
+    setBusy(false);
+    if (!r.ok) return setError(r.error);
     if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
     setSent(true);
+  };
+
+  const takePhoto = async () => {
+    const perm = await ImagePicker.requestCameraPermissionsAsync();
+    const res = perm.granted
+      ? await ImagePicker.launchCameraAsync({ quality: 0.5, allowsEditing: false })
+      : await ImagePicker.launchImageLibraryAsync({ quality: 0.5, mediaTypes: ['images'] });
+    if (!res.canceled && res.assets[0]) setPhoto(res.assets[0].uri);
   };
 
   if (sent) return <Sent kind={pick} plugName={plugs.find((p) => p.id === chosenPlug)} onAgain={() => setSent(false)} />;
@@ -118,16 +134,20 @@ export default function CheckInScreen() {
         </View>
       )}
 
-      <View style={{ marginTop: 'auto', flexDirection: 'row', gap: 8 }}>
-        <Pressable accessibilityRole="button" onPress={send} style={styles.send}>
+      {error && (
+        <T size={13} color={statusColors.broken.text} style={{ marginTop: 'auto', textAlign: 'center' }}>
+          {error}
+        </T>
+      )}
+      <View style={{ marginTop: error ? 0 : 'auto', flexDirection: 'row', gap: 8 }}>
+        <Pressable accessibilityRole="button" disabled={busy} onPress={send} style={[styles.send, busy && { opacity: 0.6 }]}>
           <T w="bold" size={17} color={colors.brandInk}>
-            ابعت · بيوصل للكل فورًا
+            {busy ? 'بنبعت...' : 'ابعت · بيوصل للكل فورًا'}
           </T>
         </Pressable>
-        {/* رفع الصور هييجي مع الباك إند */}
-        <IconButton label="ضيف صورة (قريبًا)" size={56} style={{ borderRadius: 18, opacity: 0.5 }}>
-          <Camera />
-        </IconButton>
+        <Pressable accessibilityRole="button" accessibilityLabel={photo ? 'غيّر الصورة' : 'ضيف صورة'} onPress={takePhoto} style={styles.photoBtn}>
+          {photo ? <Image source={{ uri: photo }} style={styles.photo} /> : <Camera />}
+        </Pressable>
       </View>
     </View>
   );
@@ -208,5 +228,7 @@ const styles = StyleSheet.create({
   segItem: { flex: 1, height: 44, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
   sendFull: { height: 56, borderRadius: 18, alignItems: 'center', justifyContent: 'center' },
   send: { flex: 1, height: 56, borderRadius: 18, backgroundColor: colors.brand, alignItems: 'center', justifyContent: 'center' },
+  photoBtn: { width: 56, height: 56, borderRadius: 18, backgroundColor: colors.surface, alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
+  photo: { width: 56, height: 56 },
   badgeBig: { borderRadius: 60, alignItems: 'center', justifyContent: 'center' },
 });

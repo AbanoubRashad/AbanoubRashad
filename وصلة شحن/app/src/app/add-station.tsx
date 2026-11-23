@@ -1,4 +1,4 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, TextInput, View } from 'react-native';
 
@@ -23,7 +23,10 @@ export default function AddStationScreen() {
   const [kw, setKw] = useState<number | null>(null);
   const [count, setCount] = useState(1);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const valid = name.trim().length >= 3;
+
+  if (app.remote && !app.user) return <Redirect href={{ pathname: '/login', params: { next: '/add-station' } }} />;
 
   if (done)
     return (
@@ -48,9 +51,11 @@ export default function AddStationScreen() {
           label="ابعت للمراجعة"
           disabled={!valid}
           style={{ opacity: valid ? 1 : 0.5 }}
-          onPress={() => {
-            app.addStation({ name: name.trim(), operator: op, connector: conn, kw, count, lat: pos.lat, lng: pos.lng });
-            setDone(true);
+          onPress={async () => {
+            setError(null);
+            const r = await app.addStation({ name: name.trim(), operator: op, connector: conn, kw, count, lat: pos.lat, lng: pos.lng });
+            if (r.ok) setDone(true);
+            else setError(r.error);
           }}
         />
       }
@@ -62,6 +67,11 @@ export default function AddStationScreen() {
       <T w="bold" size={26} style={{ textAlign: 'right' }}>
         محطة مش على الخريطة؟
       </T>
+      {error && (
+        <T size={13} color={statusColors.broken.text} style={{ textAlign: 'right' }}>
+          {error}
+        </T>
+      )}
 
       <View style={styles.locBox}>
         <T size={13} color={granted ? colors.textSoft : statusColors.queue.text} style={{ textAlign: 'right' }}>

@@ -37,7 +37,9 @@ export const colors = {
   },
 } as const;
 
-export type StationStatus = 'working' | 'broken' | 'queue' | 'conflict' | 'unknown';
+import type { StationStatus } from '../domain/types';
+
+export type { StationStatus };
 
 export const statusColors: Record<StationStatus, { fill: string; ink: string; text: string; tint: string }> = {
   working: { fill: '#34D399', ink: '#04261A', text: '#6EE7B7', tint: '#0F2A22' },
