@@ -1,5 +1,5 @@
 // Edge Function: لما بلاغ جديد يغيّر حالة محطة، نبعت إشعار لكل اللي بيراقبوها (حتى لو التطبيق مقفول).
-// بيشتغل من Database Webhook على INSERT في check_ins (شوف backend/webhook.sql).
+// بيشتغل من trigger على INSERT في wasla_check_ins (شوف backend/webhook.sql).
 
 import { createClient } from 'npm:@supabase/supabase-js@2.119.2';
 
@@ -26,15 +26,15 @@ const titles: Record<StationStatus, string> = {
 };
 
 Deno.serve(async (req) => {
-  // الحماية: الـ webhook بيبعت السر ده في الهيدر
-  const secret = Deno.env.get('WEBHOOK_SECRET');
+  const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+
+  // الحماية: الـ trigger بيبعت سر محفوظ في Vault، والـ function بتقارنه بنفس السر
+  const { data: secret } = await sb.rpc('wasla_webhook_secret');
   if (!secret || req.headers.get('x-webhook-secret') !== secret) return new Response('forbidden', { status: 403 });
 
   const payload = await req.json();
   if (payload?.type !== 'INSERT' || payload?.table !== 'wasla_check_ins') return new Response('ignored');
   const rec = payload.record as Row;
-
-  const sb = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
 
   const since = new Date(Date.parse(rec.at) - 24 * 3600_000).toISOString();
   const { data: rows, error } = await sb.from('wasla_check_ins').select('*').eq('station_id', rec.station_id).gte('at', since);

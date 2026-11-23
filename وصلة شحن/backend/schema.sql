@@ -157,3 +157,6 @@ create policy "wasla: upload own checkin photos" on storage.objects
   with check (bucket_id = 'wasla-checkin-photos' and (storage.foldername(name))[1] = (select auth.uid())::text);
 create policy "wasla: read checkin photos" on storage.objects
   for select to authenticated using (bucket_id = 'wasla-checkin-photos');
+
+-- الـ trigger بس هو اللي يشغّلها
+revoke execute on function public.wasla_check_in_guard() from public, anon, authenticated;
